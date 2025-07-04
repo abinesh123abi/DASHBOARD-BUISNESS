@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { TailSpin } from 'react-loader-spinner'
 const App = () => {
   const [name, setName] = useState('')
   const [location, setLocation] = useState('')
@@ -9,7 +9,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    const response = await fetch('http://localhost:5000/business-data', {
+    const response = await fetch('https://dashboard-backend-jde1.onrender.com/business-data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, location }),
@@ -22,13 +22,23 @@ const App = () => {
   const regenerateHeadline = async () => {
     setLoading(true)
     const response = await fetch(
-      `http://localhost:5000/regenerate-headline?name=${name}&location=${location}`
+      `https://dashboard-backend-jde1.onrender.com/regenerate-headline?name=${name}&location=${location}`
     )
     const result = await response.json()
     setData({ ...data, headline: result.headline })
     setLoading(false)
   }
-
+  const LoadingSpinner = () => {
+  return (
+    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+      <TailSpin
+        height={50}
+        width={50}
+        color="#4fa94d"
+      />
+    </div>
+  )
+}
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6">
@@ -61,7 +71,12 @@ const App = () => {
         </form>
 
         {/* Loading */}
-        {loading && <p className="text-center mt-4">⏳ Loading...</p>}
+        {loading && 
+        <div className="flex items-center justify-center mt-6">
+          <LoadingSpinner />
+        </div>
+        
+        }
 
         {/* Display Data */}
         {data && !loading && (
